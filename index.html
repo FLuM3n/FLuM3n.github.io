@@ -1,21 +1,405 @@
+
 <!doctype html>
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>FLuM3n · 测试站点</title>
-<style>body{margin:0;background:#f3f6fa;color:#17233a;font-family:system-ui,sans-serif;display:grid;place-items:center;min-height:100vh}main{max-width:600px;margin:24px;padding:40px;border-radius:24px;background:white;box-shadow:0 12px 48px #17233a12}small{color:#15805b;font-weight:600}h1{font-size:36px;letter-spacing:-1px}p{line-height:1.8;color:#526078}button{background:#2457e8;color:white;border:0;border-radius:12px;padding:14px 22px;font-size:16px;cursor:pointer}code{background:#edf2fb;padding:4px 8px;border-radius:6px}footer{margin-top:28px;font-size:13px;color:#748098}</style>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FLuM3n · 幸运刮刮乐</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  padding: 24px 16px;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(ellipse at top, #e7edff 0%, transparent 60%),
+    #f3f6fa;
+  color: #17233a;
+  font-family: system-ui, -apple-system, "PingFang SC",
+    "Microsoft YaHei", sans-serif;
+}
+
+main {
+  width: 100%;
+  max-width: 520px;
+  padding: 32px 24px;
+  text-align: center;
+  background: #fff;
+  border: 1px solid #e8edf5;
+  border-radius: 24px;
+  box-shadow: 0 16px 48px rgba(23, 35, 58, 0.09);
+}
+
+.brand {
+  margin-bottom: 10px;
+  color: #2457e8;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 3px;
+}
+
+h1 {
+  margin: 0;
+  font-size: 34px;
+  font-weight: 850;
+  letter-spacing: 2px;
+}
+
+.subtitle {
+  margin: 12px 0 28px;
+  color: #8490a5;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.scratch-card {
+  position: relative;
+  width: 100%;
+  height: 230px;
+  overflow: hidden;
+  border: 3px solid #f2d28a;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #fff9e7, #ffe9b0);
+  box-shadow: 0 8px 24px rgba(190, 139, 34, 0.15);
+  isolation: isolate;
+}
+
+.prize-content {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 18px;
+  background:
+    radial-gradient(circle at 10% 15%, #ffffffb8 0 3px, transparent 4px),
+    radial-gradient(circle at 90% 80%, #ffffffb8 0 4px, transparent 5px),
+    linear-gradient(135deg, #fff8df, #ffedba 55%, #fff9e8);
+}
+
+.prize-label {
+  margin-bottom: 12px;
+  color: #b47a18;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 3px;
+}
+
+.prize-content h2 {
+  margin: 0;
+  color: #c52b35;
+  font-size: clamp(20px, 5vw, 27px);
+  font-weight: 900;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.prize-content p {
+  margin: 12px 0 0;
+  color: #926d32;
+  font-size: 13px;
+  letter-spacing: 1px;
+}
+
+#scratchCanvas {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: crosshair;
+  touch-action: none;
+}
+
+.hint {
+  margin: 18px 0 0;
+  color: #526078;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.hint strong {
+  color: #2457e8;
+}
+
+footer {
+  margin-top: 28px;
+  color: #a0a9b8;
+  font-size: 12px;
+}
+
+@media (max-width: 400px) {
+  main {
+    padding: 28px 18px;
+  }
+
+  h1 {
+    font-size: 30px;
+  }
+
+  .scratch-card {
+    height: 220px;
+  }
+}
+</style>
 </head>
+
 <body>
 <main>
-<small>● GITHUB PAGES 已上线</small>
-<h1>测试站点已就绪</h1>
-<p>欢迎来到 FLuM3n 的测试空间。这里可以用来测试网页、前端功能和静态资源。</p>
-<p>站点地址：<code>flum3n.github.io</code></p>
-<button id="test" type="button">点击测试交互</button>
-<p id="result" aria-live="polite">等待测试</p>
-<footer>通过修改仓库中的 index.html 更新此页面。</footer>
+  <div class="brand">FLuM3n · LUCKY DRAW</div>
+
+  <h1>请抽奖</h1>
+
+  <p class="subtitle">
+    好运已经准备就绪<br>
+    刮开下方涂层，看看你的专属奖品
+  </p>
+
+  <div class="scratch-card" id="scratchCard">
+    <!-- 被刮开的中奖内容 -->
+    <div class="prize-content">
+      <div class="prize-label">CONGRATULATIONS</div>
+      <h2>恭喜UU因答辩优秀（被卡版）中奖</h2>
+      <p>请找大大郭线下兑换</p>
+    </div>
+
+    <!-- 刮奖涂层 -->
+    <canvas
+      id="scratchCanvas"
+      aria-label="请刮开涂层查看中奖结果"
+    ></canvas>
+  </div>
+
+  <p class="hint" id="hint" aria-live="polite">
+    用 <strong>鼠标</strong> 或 <strong>手指</strong> 刮一刮
+  </p>
+
+  <footer>
+    GOOD LUCK · 祝答辩顺利
+  </footer>
 </main>
-<script>let count=0;document.getElementById("test").addEventListener("click",()=>{document.getElementById("result").textContent="交互正常 · 点击 "+(++count)+" 次 · "+new Date().toLocaleString("zh-CN")});</script>
+
+<script>
+(() => {
+  const canvas = document.getElementById("scratchCanvas");
+  const hint = document.getElementById("hint");
+  const ctx = canvas.getContext("2d", {
+    willReadFrequently: true
+  });
+
+  let isDrawing = false;
+  let lastPoint = null;
+  let revealed = false;
+  let moveCount = 0;
+
+  // 绘制银灰色刮奖涂层
+  function drawCover() {
+    if (revealed) return;
+
+    const rect = canvas.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
+
+    const dpr = Math.max(1, window.devicePixelRatio || 1);
+
+    canvas.width = Math.round(rect.width * dpr);
+    canvas.height = Math.round(rect.height * dpr);
+
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.globalCompositeOperation = "source-over";
+
+    const w = rect.width;
+    const h = rect.height;
+
+    const gradient = ctx.createLinearGradient(0, 0, w, h);
+    gradient.addColorStop(0, "#dce1e9");
+    gradient.addColorStop(0.45, "#b9c1ce");
+    gradient.addColorStop(1, "#e5e9ef");
+
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, w, h);
+
+    // 添加细腻的金属纹理
+    ctx.save();
+    ctx.strokeStyle = "rgba(255,255,255,0.22)";
+    ctx.lineWidth = 1;
+
+    for (let y = 5; y < h; y += 8) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(w, y);
+      ctx.stroke();
+    }
+
+    // 添加装饰性圆点
+    for (let i = 0; i < 75; i++) {
+      const x = Math.random() * w;
+      const y = Math.random() * h;
+      const r = Math.random() * 1.8 + 0.5;
+
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fillStyle = i % 2
+        ? "rgba(255,255,255,0.35)"
+        : "rgba(100,110,125,0.12)";
+      ctx.fill();
+    }
+
+    ctx.restore();
+
+    // 涂层上的提示文字
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+    ctx.fillStyle = "#515d70";
+    ctx.font = `800 ${Math.min(26, w * 0.075)}px system-ui, sans-serif`;
+    ctx.fillText("刮开涂层", w / 2, h / 2 - 15);
+
+    ctx.fillStyle = "#647084";
+    ctx.font = `500 ${Math.min(14, w * 0.042)}px system-ui, sans-serif`;
+    ctx.fillText("SCRATCH TO REVEAL", w / 2, h / 2 + 20);
+  }
+
+  // 获取鼠标或触摸点在画布中的位置
+  function getPoint(event) {
+    const rect = canvas.getBoundingClientRect();
+
+    return {
+      x: event.clientX - rect.left,
+      y: event.clientY - rect.top
+    };
+  }
+
+  // 擦除涂层
+  function erase(point) {
+    ctx.save();
+    ctx.globalCompositeOperation = "destination-out";
+    ctx.lineWidth = 44;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+
+    if (lastPoint) {
+      ctx.beginPath();
+      ctx.moveTo(lastPoint.x, lastPoint.y);
+      ctx.lineTo(point.x, point.y);
+      ctx.stroke();
+    } else {
+      ctx.beginPath();
+      ctx.arc(point.x, point.y, 22, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    ctx.restore();
+    lastPoint = point;
+  }
+
+  // 检查涂层被刮开的比例
+  function getScratchedRatio() {
+    const image = ctx.getImageData(
+      0, 0, canvas.width, canvas.height
+    );
+
+    const data = image.data;
+    let transparent = 0;
+    let total = 0;
+
+    // 抽样检测，避免频繁扫描全部像素
+    for (let i = 3; i < data.length; i += 64) {
+      total++;
+
+      if (data[i] < 20) {
+        transparent++;
+      }
+    }
+
+    return total ? transparent / total : 0;
+  }
+
+  // 揭晓中奖结果
+  function revealPrize() {
+    if (revealed) return;
+
+    revealed = true;
+    isDrawing = false;
+    lastPoint = null;
+
+    // 清空画布，完整显示底层奖品
+    ctx.save();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.restore();
+
+    hint.textContent = "中奖结果已揭晓！恭喜UU！";
+  }
+
+  function checkProgress() {
+    if (revealed) return;
+
+    if (getScratchedRatio() >= 0.40) {
+      revealPrize();
+    }
+  }
+
+  canvas.addEventListener("pointerdown", event => {
+    if (revealed) return;
+
+    event.preventDefault();
+    isDrawing = true;
+    lastPoint = null;
+
+    canvas.setPointerCapture(event.pointerId);
+
+    erase(getPoint(event));
+    checkProgress();
+  });
+
+  canvas.addEventListener("pointermove", event => {
+    if (!isDrawing || revealed) return;
+
+    event.preventDefault();
+
+    erase(getPoint(event));
+    moveCount++;
+
+    // 每隔几次移动检查一次，降低计算开销
+    if (moveCount % 5 === 0) {
+      checkProgress();
+    }
+  });
+
+  function stopDrawing() {
+    if (!isDrawing) return;
+
+    isDrawing = false;
+    lastPoint = null;
+
+    checkProgress();
+  }
+
+  canvas.addEventListener("pointerup", stopDrawing);
+  canvas.addEventListener("pointercancel", stopDrawing);
+
+  canvas.addEventListener("contextmenu", event => {
+    event.preventDefault();
+  });
+
+  // 屏幕尺寸变化时重新绘制涂层
+  window.addEventListener("resize", () => {
+    if (!revealed) {
+      drawCover();
+    }
+  });
+
+  drawCover();
+})();
+</script>
 </body>
 </html>
